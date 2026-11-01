@@ -59,7 +59,9 @@
   });
   song.addEventListener('ended', function () { song.currentTime = 0; song.play().catch(function () {}); });
 
-  var cols = walima ? ['#b3293b', '#e9d3b0', '#d9a441'] : ['#f4b6bf', '#f9d3d8', '#fff1e6'];
+  var cols = walima ? ['#b3293b', '#e9d3b0', '#d9a441']
+    : C.theme === 'sunset' ? ['#c0394d', '#f6d6b8', '#e9a46a']
+    : ['#f4b6bf', '#f9d3d8', '#fff1e6'];
   function petals() {
     var box = document.getElementById('petals');
     for (var i = 0; i < 24; i++) {

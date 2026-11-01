@@ -7,6 +7,14 @@ body{font-family:'Cormorant Garamond',serif;overflow:hidden;-webkit-tap-highligh
   --scrim:255,250,244;--veil:rgba(255,250,244,.90);--veil2:rgba(247,228,216,.96);
   --btn-bg:#b98a45;--btn-fg:#fff;
 }
+.theme-sunset{
+  --gold:#7d1427;--gold2:#b3263d;--ink:#5a0f1d;--ink2:#7e3a47;
+  --scrim:255,240,226;--veil:rgba(255,244,232,.93);--veil2:rgba(250,226,210,.97);
+  --btn-bg:#7d1427;--btn-fg:#fff4e8;
+}
+.theme-sunset .scrim.t{background:linear-gradient(rgba(255,240,226,.5),rgba(255,240,226,.18) 60%,rgba(255,240,226,0))}
+.theme-sunset .scrim.b{background:linear-gradient(rgba(255,240,226,0),rgba(255,240,226,.6) 45%,rgba(255,240,226,.78))}
+.theme-sunset .shade{background:linear-gradient(transparent,rgba(70,15,25,.5))}
 .theme-walima{
   --gold:#d9a441;--gold2:#f3d58a;--ink:#f6dc9a;--ink2:#e8c394;
   --scrim:22,6,8;--veil:rgba(30,8,10,.90);--veil2:rgba(16,4,6,.96);
