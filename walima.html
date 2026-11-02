@@ -12,25 +12,48 @@
 <script>
   // Sab details yahan se badlein
   window.CARD = {
-    theme: 'walima',
-    image: 'walima-couple.jpg',
+    theme: 'champagne',
+    image: 'walima-champagne.jpg',
     intro: 'You are invited',
     title: 'Walima Invitation - Zeeshan & Mariyam',
+    inv: {
+      host: 'Mr. and Mrs. Ahmad Shakeel Butt',
+      invite: 'cordially invite you to the Walima reception celebrating the marriage of their son',
+      after: 'Please honour us with your presence and bless the couple with your heartfelt duas as we celebrate this special occasion.',
+      ayah: {
+        ar: 'وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً',
+        en: 'And among His signs is that He created for you spouses from among yourselves, that you may find tranquility in them, and He placed between you love and mercy.',
+        ref: 'Surah Ar-Rum 30:21'
+      }
+    },
+    dua: {
+      ar: 'بَارَكَ اللَّهُ لَكُمَا وَبَارَكَ عَلَيْكُمَا وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ',
+      en: 'May Allah bless you both, shower His blessings upon you, and unite you both in goodness.'
+    },
+    envelope: true,
+    monogram: 'Z &amp; M',
+    envTitle: 'Zeeshan &amp; Mariyam',
+    countdownTo: '2026-12-06T18:30:00+05:00',
+    mapQuery: 'Daffodils Marquee Expo Center Road Johar Town Lahore',
     event: 'Walima',
-    groom: 'Zeeshan Ahmad',
+    groom: 'Zeeshan Ahmad Butt',
     with: 'with',
     bride: 'Mariyam Tariq',
     date: 'Sunday, 06 December 2026',
-    time: '06:00 PM',
+    times: [
+      { label: 'Reception', time: '06:30 PM' },
+      { label: 'Dinner', time: '07:30 PM' }
+    ],
     venue: 'Daffodils Marquee',
     address: 'Opp. Expo Center Road, Johar Town, Lahore',
+    contactsTitle: 'RSVP',
+    contacts: [
+      { name: 'Faizan Ahmad', tel: '0341-6800179' },
+      { name: 'Ahmad Shakeel', tel: '0325-0503595' }
+    ],
     map: 'https://www.google.com/maps/search/?api=1&query=Daffodils+Marquee+Expo+Center+Road+Johar+Town+Lahore',
-    music: 'music/walima.mp3',
-    credit: {
-      text: 'Music: &ldquo;Wedding Aisle Serenade&rdquo; by BudgetPixel AI, CC BY 4.0',
-      url: 'https://budgetpixel.com/background-music/wedding-aisle-serenade-ed96df72'
-    }
-  };
+    music: 'music/walima.aac'
+};
 </script>
 <script src="card.js"></script>
 </body>

@@ -12,18 +12,19 @@
     '<circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg></div>';
   var crescent = '<svg class="crescent" viewBox="0 0 48 48"><path d="M32 7A18 18 0 1 0 32 41A14 14 0 1 1 32 7Z" fill="currentColor"/>' +
     '<polygon fill="currentColor" points="35,17.5 36.7,22.3 41.8,22.4 37.7,25.4 39.2,30.2 35,27.3 30.8,30.2 32.3,25.4 28.2,22.4 33.3,22.3"/></svg>';
+  function nm(n) { return n.length > 15 ? ' sm' : ''; }
   var I = C.inv;
   var invHtml = I
     ? '<section class="inv">' + crescent +
         '<div class="bism2">بسم الله الرحمن الرحیم</div>' +
-        '<div class="blessing">' + I.blessing + '</div>' + starDiv +
+        (I.blessing ? '<div class="blessing">' + I.blessing + '</div>' + starDiv : '') +
         '<div class="host">' + I.host + '</div>' +
         '<div class="tag">' + I.invite + '</div>' +
-        '<div class="event2">' + C.event + '</div>' +
-        '<div class="tag">' + I.of + '</div>' +
-        '<div class="name">' + C.groom + '</div>' +
+        (I.of ? '<div class="event2">' + C.event + '</div><div class="tag">' + I.of + '</div>' : '') +
+        '<div class="name' + nm(C.groom) + '">' + C.groom + '</div>' +
         '<div class="weds">' + (C.with || 'weds') + '</div>' +
-        '<div class="name">' + C.bride + '</div>' + starDiv +
+        '<div class="name' + nm(C.bride) + '">' + C.bride + '</div>' +
+        (I.after ? '<div class="after">' + I.after + '</div>' : '') + starDiv +
         (I.ayah ? '<div class="ayah-ar">' + I.ayah.ar + '</div><div class="ayah-en">' + I.ayah.en + '</div><div class="ayah-ref">' + I.ayah.ref + '</div>' : '') +
       '</section>'
     : '';
@@ -60,9 +61,9 @@
             '<div class="event rv' + (C.event.length > 8 ? ' long' : '') + '">' + C.event + '</div>' +
           '</div>' +
           '<div class="bottom">' +
-            '<div class="name rv">' + C.groom + '</div>' +
+            '<div class="name rv' + nm(C.groom) + '">' + C.groom + '</div>' +
             '<div class="weds rv">' + (C.with || 'weds') + '</div>' +
-            '<div class="name rv">' + C.bride + '</div>' +
+            '<div class="name rv' + nm(C.bride) + '">' + C.bride + '</div>' +
             '<div class="date rv">' + C.date + '</div>' +
           '</div>' +
           '<div class="hint">Swipe up &#8964;</div>' +
@@ -70,12 +71,16 @@
         invHtml +
         '<section class="details"><div class="card">' +
           (C.host && !I ?'<div class="host">' + C.host + '</div>' + (C.hostTag ? '<div class="tag">' + C.hostTag + '</div>' : '') + '<div class="rule"></div>' : '') +
-          '<div class="time">' + C.time + '</div>' +
+          (C.times
+            ? C.times.map(function (t, i) {
+                return (i ? '<div class="gap"></div>' : '') + '<div class="tag tl">' + t.label + '</div><div class="time">' + t.time + '</div>';
+              }).join('')
+            : (C.timeLabel ? '<div class="tag tl">' + C.timeLabel + '</div>' : '') + '<div class="time">' + C.time + '</div>') +
           (C.timeAddr ? '<div class="addr">' + C.timeAddr + '</div>' : '') +
           '<div class="rule"></div>' +
           '<div class="venue">' + C.venue + '</div>' +
           '<div class="addr">' + C.address + '</div>' +
-          (C.contacts ? '<div class="rule"></div><div class="contacts">' + C.contacts.map(function (c) {
+          (C.contacts ? '<div class="rule"></div>' + (C.contactsTitle ? '<div class="rsvp">' + C.contactsTitle + '</div>' : '') + '<div class="contacts">' + C.contacts.map(function (c) {
             return '<a href="tel:' + c.tel.replace(/[^+\d]/g, '') + '">' + c.name + '<b>' + c.tel + '</b></a>';
           }).join('') + '</div>' : '') +
           (C.countdownTo ? '' : '<a class="map" href="' + C.map + '" target="_blank" rel="noopener">View location</a>') +
@@ -115,6 +120,7 @@
 
   var cols = walima ? ['#b3293b', '#e9d3b0', '#d9a441']
     : C.theme === 'sunset' ? ['#c0394d', '#f6d6b8', '#e9a46a']
+    : C.theme === 'champagne' ? ['#f6e7c8', '#e4c98e', '#ffffff']
     : ['#f4b6bf', '#f9d3d8', '#fff1e6'];
   function petals() {
     var b = document.getElementById('petals');

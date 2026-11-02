@@ -79,7 +79,7 @@ body{font-family:'Cormorant Garamond',serif;overflow:hidden;-webkit-tap-highligh
 /* details page */
 .details{position:relative;min-height:100%;padding:16cqw 0 14cqw;display:flex;flex-direction:column;justify-content:center;text-align:center;color:var(--ink);
   background:linear-gradient(rgba(var(--scrim),0),var(--veil) 14%,var(--veil2))}
-.card{width:86%;margin:0 auto;padding:11cqw 6cqw 9cqw;border:1.5px solid var(--gold);border-radius:44cqw 44cqw 4cqw 4cqw;position:relative}
+.card{width:86%;margin:0 auto;padding:22cqw 6cqw 9cqw;border:1.5px solid var(--gold);border-radius:44cqw 44cqw 4cqw 4cqw;position:relative}
 .card::before{content:"";position:absolute;inset:2.4cqw;border:1px solid var(--gold);opacity:.5;border-radius:41cqw 41cqw 3cqw 3cqw;pointer-events:none}
 .host{font-size:5.4cqw;font-weight:700;letter-spacing:.1em;text-transform:uppercase;line-height:1.4}
 .tag{font-size:4.6cqw;letter-spacing:.2em;text-transform:uppercase;color:var(--ink2);margin-top:2cqw}
@@ -181,3 +181,30 @@ body{font-family:'Cormorant Garamond',serif;overflow:hidden;-webkit-tap-highligh
 .ayah-ref{font-size:3.6cqw;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-top:2.5cqw}
 .dua{width:86%;margin:11cqw auto 0;text-align:center;color:var(--ink)}
 .dua .divider{margin-top:0}
+
+/* time label, RSVP heading, walima tweaks */
+.tl{margin-top:0;margin-bottom:1.5cqw}
+.rsvp{font-size:5.4cqw;font-weight:700;letter-spacing:.34em;text-indent:.34em;color:var(--gold);margin-bottom:3cqw}
+.theme-walima .cdb{background:rgba(255,255,255,.06)}
+
+/* ---- champagne theme (walima), long names, closing line ---- */
+.theme-champagne{
+  --gold:#7a5420;--gold2:#a9803a;--ink:#4a3320;--ink2:#6f553d;
+  --scrim:255,247,236;--veil:rgba(255,249,240,.93);--veil2:rgba(247,234,214,.97);
+  --btn-bg:#9a7230;--btn-fg:#fff;
+}
+.theme-champagne .scrim.t{background:linear-gradient(rgba(255,247,236,.62),rgba(255,247,236,.22) 60%,rgba(255,247,236,0))}
+.theme-champagne .scrim.b{background:linear-gradient(rgba(255,247,236,0),rgba(255,247,236,.62) 45%,rgba(255,247,236,.82))}
+.theme-champagne .shade{background:linear-gradient(transparent,rgba(80,55,25,.5))}
+.theme-champagne .curtain{background:
+    linear-gradient(rgba(0,0,0,.25),rgba(0,0,0,0) 22%,rgba(0,0,0,0) 78%,rgba(0,0,0,.2)),
+    linear-gradient(90deg,#8d6b35,#d9bd86 11%,#a9843f 22%,#e6cf9f 36%,#a9843f 50%,#d9bd86 64%,#8d6b35 78%,#c9a35a 100%)}
+.theme-champagne .env-top{color:#6b4a1e}
+.theme-champagne .paper{color:#6b4a1e}
+.theme-champagne .env-hint{color:#6b4a1e}
+.theme-champagne .seal{background:radial-gradient(circle at 35% 30%,#dcbb74,#9a7230 55%,#5e4318);color:#fff6dc}
+.theme-champagne .seal::before{border-color:rgba(255,246,220,.75)}
+.name.sm{font-size:10.6cqw}
+.inv .name.sm{font-size:11cqw}
+.after{font-size:4.6cqw;font-style:italic;line-height:1.5;color:var(--ink2);margin-top:5cqw;padding:0 2cqw}
+.gap{height:3.5cqw}
