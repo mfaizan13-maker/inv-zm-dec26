@@ -3,7 +3,7 @@
   // embedded (data:) files are turned into blob URLs once, so big single-file cards stay light on phones
   function blob(d) {
     try {
-      if (d && d.indexOf('data:') === 0 && d.length > 400000) {
+      if (d && d.indexOf('data:') === 0 && d.length > 400000 && !window.NOBLOB) {
         var p = d.indexOf(','), m = d.slice(5, d.indexOf(';')), b = atob(d.slice(p + 1)), u = new Uint8Array(b.length);
         for (var i = 0; i < b.length; i++) u[i] = b.charCodeAt(i);
         return URL.createObjectURL(new Blob([u], { type: m }));
@@ -104,7 +104,7 @@
               '<div class="cd-row">' + box('cd-d', 'Days') + box('cd-h', 'Hours') + box('cd-m', 'Minutes') + box('cd-s', 'Seconds') + '</div>' +
               '<div class="cd-s2">Until the big day</div></div>' +
             '<div class="vn"><div class="cd-t">The Venue</div>' +
-              '<iframe class="mapframe" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=' + encodeURIComponent(C.mapQuery || C.venue) + '&output=embed"></iframe>' +
+              (C.noMapFrame ? '' : '<iframe class="mapframe" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=' + encodeURIComponent(C.mapQuery || C.venue) + '&output=embed"></iframe>') +
               '<a class="map" href="' + C.map + '" target="_blank" rel="noopener">View location</a></div>'
           : '') +
         duaHtml +
@@ -129,14 +129,70 @@
   window.addEventListener('resize', setU);
   window.addEventListener('orientationchange', setU);
 
+  // Limited viewers (WhatsApp, Files preview, in-app browsers): try to jump to the real browser, and show a button for it
+  (function () {
+    var ua = navigator.userAgent || '';
+    var ios = /iPhone|iPad|iPod/.test(ua), android = /Android/.test(ua);
+    var limited = location.protocol === 'file:' || /FBAN|FBAV|Instagram|Line\/|WhatsApp|Snapchat|MicroMessenger|; wv\)/i.test(ua) || (ios && !/Safari\//.test(ua));
+    if (!limited) return;
+    var web = (location.protocol === 'http:' || location.protocol === 'https:') ? location.href : (C.webUrl || '');
+    if (!web) return;
+    function go(auto) {
+      if (android) {
+        location.href = 'intent://' + web.replace(/^https?:\/\//, '') + '#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=' + encodeURIComponent(web) + ';end';
+      } else if (ios) {
+        location.href = 'x-safari-' + web;                                   // asks iPhone to open Safari
+        if (!auto) setTimeout(function () { location.href = web; }, 900);    // if that is blocked, open inside this viewer
+      } else if (!auto) { location.href = web; }
+    }
+    var bar = document.createElement('div');
+    bar.id = 'openbar';
+    bar.innerHTML = '<span>Gana aur location ke liye browser mein kholein</span><button type="button" id="openbtn">Open in browser</button><i id="openx">&times;</i>';
+    document.body.appendChild(bar);
+    document.getElementById('openbtn').addEventListener('click', function () { go(false); });
+    document.getElementById('openx').addEventListener('click', function () { bar.remove(); });
+    try { if (!sessionStorage.getItem('triedOpen')) { sessionStorage.setItem('triedOpen', '1'); go(true); } } catch (e) {}
+  })();
+
   var song = document.getElementById('song');
   var mute = document.getElementById('mute');
+  // Two ways to play the song. Normal pages use the <audio> tag. Phone file-viewers (WhatsApp / Files preview) often block
+  // the <audio> tag, so the offline file sets window.WEBAUDIO and the song is decoded and played through the Web Audio API instead.
+  var wa = null, waFailed = false;
+  var useWA = !!(window.WEBAUDIO && (window.AudioContext || window.webkitAudioContext));
+  if (window.WEBAUDIO) song.preload = 'none';
+  function waPlay() {
+    if (wa.src) return;
+    var s = wa.ctx.createBufferSource();
+    s.buffer = wa.buf; s.loop = true; s.connect(wa.ctx.destination); s.start(0); wa.src = s;
+  }
+  function waStart() {
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if (!wa) wa = { ctx: new AC(), buf: null, src: null, loading: false, on: false };
+    try { wa.ctx.resume(); } catch (e) {}
+    wa.on = true; mute.style.opacity = 1;
+    if (wa.buf) { waPlay(); return; }
+    if (wa.loading) return;
+    wa.loading = true;
+    var d = C.music, bin = atob(d.slice(d.indexOf(',') + 1)), u = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
+    var ok = function (buf) { wa.buf = buf; wa.loading = false; if (wa.on) waPlay(); };
+    var bad = function () { wa = null; waFailed = true; startSong(); };       // could not decode: use the <audio> tag
+    try { var pr = wa.ctx.decodeAudioData(u.buffer, ok, bad); if (pr && pr.catch) pr.catch(bad); } catch (e) { bad(); }
+  }
+  window.__cardAudio = function () { return wa ? { state: wa.ctx.state, t: +wa.ctx.currentTime.toFixed(2), playing: !!wa.src, loaded: !!wa.buf, on: wa.on } : null; };
   function startSong() {
+    if (useWA && !waFailed) { waStart(); return; }
     var p = song.play();
     mute.style.opacity = 1;
     if (p && p.catch) p.catch(function () { mute.style.opacity = .5; });   // blocked: dim button = tap to play
   }
   mute.addEventListener('click', function () {
+    if (useWA && !waFailed && wa) {
+      if (wa.on) { wa.on = false; mute.style.opacity = .5; try { wa.ctx.suspend(); } catch (e) {} }
+      else { wa.on = true; mute.style.opacity = 1; try { wa.ctx.resume(); } catch (e) {} if (wa.buf) waPlay(); }
+      return;
+    }
     if (song.paused) startSong();
     else { song.pause(); mute.style.opacity = .5; }
   });
@@ -179,6 +235,8 @@
     var a = e.target.closest && e.target.closest('a[target="_blank"]');
     if (!a) return;
     e.preventDefault();
+    // opened as a local file (WhatsApp / Files preview): new windows don't work there, so go in the same page
+    if (location.protocol !== 'http:' && location.protocol !== 'https:') { window.location.href = a.href; return; }
     var w = null;
     try { w = window.open(a.href, '_blank'); } catch (err) {}
     if (!w) window.location.href = a.href;

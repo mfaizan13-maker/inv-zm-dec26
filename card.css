@@ -208,3 +208,8 @@ body{font-family:'Cormorant Garamond',serif;overflow:hidden;-webkit-tap-highligh
 .inv .name.sm{font-size:calc(11 * var(--u))}
 .after{font-size:calc(4.6 * var(--u));font-style:italic;line-height:1.5;color:var(--ink2);margin-top:calc(5 * var(--u));padding:0 calc(2 * var(--u))}
 .gap{height:calc(3.5 * var(--u))}
+
+/* "open in browser" bar, shown only inside WhatsApp / preview viewers */
+#openbar{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;gap:8px;align-items:center;justify-content:space-between;padding:8px 10px;background:rgba(20,20,20,.93);color:#fff;font:13px/1.3 system-ui,-apple-system,sans-serif}
+#openbar button{flex:none;border:0;border-radius:16px;padding:8px 13px;background:#e2c07a;color:#222;font-weight:700;font-size:13px}
+#openbar i{font-style:normal;font-size:22px;padding:0 4px;cursor:pointer}
