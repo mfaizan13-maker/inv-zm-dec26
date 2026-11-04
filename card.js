@@ -3,7 +3,7 @@
   // embedded (data:) files are turned into blob URLs once, so big single-file cards stay light on phones
   function blob(d) {
     try {
-      if (d && d.indexOf('data:') === 0) {
+      if (d && d.indexOf('data:') === 0 && d.length > 400000) {
         var p = d.indexOf(','), m = d.slice(5, d.indexOf(';')), b = atob(d.slice(p + 1)), u = new Uint8Array(b.length);
         for (var i = 0; i < b.length; i++) u[i] = b.charCodeAt(i);
         return URL.createObjectURL(new Blob([u], { type: m }));
@@ -114,7 +114,7 @@
       envelope +
       '<button class="tap" id="tap">Tap to open</button>' +
     '</div>' +
-    '<button class="mute" id="mute" aria-label="Music">♪</button>' +
+    '<button class="mute show" id="mute" aria-label="Music">♪</button>' +
     '<audio id="song" preload="auto" src="' + C.music + '"></audio>';
 
   var scene = document.createElement('main');
@@ -131,9 +131,13 @@
 
   var song = document.getElementById('song');
   var mute = document.getElementById('mute');
-  song.addEventListener('canplay', function () { mute.classList.add('show'); });
+  function startSong() {
+    var p = song.play();
+    mute.style.opacity = 1;
+    if (p && p.catch) p.catch(function () { mute.style.opacity = .5; });   // blocked: dim button = tap to play
+  }
   mute.addEventListener('click', function () {
-    if (song.paused) { song.play(); mute.style.opacity = 1; }
+    if (song.paused) startSong();
     else { song.pause(); mute.style.opacity = .5; }
   });
   song.addEventListener('ended', function () { song.currentTime = 0; song.play().catch(function () {}); });
@@ -171,6 +175,15 @@
     setInterval(tick, 1000);
   }
 
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[target="_blank"]');
+    if (!a) return;
+    e.preventDefault();
+    var w = null;
+    try { w = window.open(a.href, '_blank'); } catch (err) {}
+    if (!w) window.location.href = a.href;
+  });
+
   function openCard() {
     scene.classList.add('open');
     setTimeout(petals, 1500);
@@ -179,12 +192,12 @@
   if (env) {
     document.getElementById('seal').addEventListener('click', function () {
       scene.classList.add('env-open');
-      song.play().catch(function () {});
+      startSong();
       setTimeout(openCard, 3000);
     });
   } else {
     document.getElementById('tap').addEventListener('click', function () {
-      song.play().catch(function () {});
+      startSong();
       openCard();
     });
   }
