@@ -1,5 +1,18 @@
 (function () {
   var C = window.CARD;
+  // embedded (data:) files are turned into blob URLs once, so big single-file cards stay light on phones
+  function blob(d) {
+    try {
+      if (d && d.indexOf('data:') === 0) {
+        var p = d.indexOf(','), m = d.slice(5, d.indexOf(';')), b = atob(d.slice(p + 1)), u = new Uint8Array(b.length);
+        for (var i = 0; i < b.length; i++) u[i] = b.charCodeAt(i);
+        return URL.createObjectURL(new Blob([u], { type: m }));
+      }
+    } catch (e) {}
+    return d;
+  }
+  C.image = blob(C.image);
+  C.music = blob(C.music);
   var walima = C.theme === 'walima';
   var env = !!C.envelope;
   document.title = C.title;
@@ -108,6 +121,13 @@
   scene.className = 'scene' + (env ? ' has-env' : '');
   scene.innerHTML = html;
   document.body.appendChild(scene);
+
+  // size unit for the whole card: 1 unit = 1% of the card width (works on every phone, no container-query support needed)
+  var frameEl = scene.querySelector('.frame');
+  function setU() { frameEl.style.setProperty('--u', (frameEl.clientWidth / 100) + 'px'); }
+  setU();
+  window.addEventListener('resize', setU);
+  window.addEventListener('orientationchange', setU);
 
   var song = document.getElementById('song');
   var mute = document.getElementById('mute');
